@@ -23,8 +23,7 @@
 - 📱 **易于使用**：简单的 XML 属性配置和代码调用
 
 ## 📸 预览
-
-![预览图](https://via.placeholder.com/800x400.png?text=SimpleSpeedView+Preview)
+![演示效果](https://github.com/DIABLOSER/SimpleSpeedView/blob/main/demonstrate.gif)
 
 ## 📦 安装
 
