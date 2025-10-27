@@ -1,5 +1,6 @@
 package io.github.diabloser
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
@@ -41,6 +42,9 @@ class SimpleSpeedView @JvmOverloads constructor(
     // 速度属性
     private var currentSpeed: Float = 0f // 当前速度
     private var maxSpeed: Float = 200f // 最大速度
+    
+    // 速度动画
+    private var speedAnimator: ValueAnimator? = null
     
     // 速度文本属性
     private var showSpeedText: Boolean = true // 是否显示速度文本
@@ -594,6 +598,35 @@ class SimpleSpeedView @JvmOverloads constructor(
         arcBackgroundPaint.strokeWidth = width
         arcProgressPaint.strokeWidth = width
         requestLayout() // 圆环宽度改变会影响刻度位置，需要重新计算
+        
+        // 如果存在边框，需要手动更新边框路径（因为边框依赖于圆环宽度）
+        if (arcBorderWidth > 0 && this.width > 0 && this.height > 0) {
+            // 重新计算边框矩形
+            val centerX = this.width / 2f
+            val centerY = this.height / 2f
+            val halfArcWidth = arcWidth / 2f
+            
+            // 外侧边框
+            val outerOffset = halfArcWidth
+            arcOuterBorderRectF.set(
+                arcRectF.left - outerOffset,
+                arcRectF.top - outerOffset,
+                arcRectF.right + outerOffset,
+                arcRectF.bottom + outerOffset
+            )
+            
+            // 内侧边框
+            val innerOffset = halfArcWidth
+            arcInnerBorderRectF.set(
+                arcRectF.left + innerOffset,
+                arcRectF.top + innerOffset,
+                arcRectF.right - innerOffset,
+                arcRectF.bottom - innerOffset
+            )
+            
+            // 更新边框路径
+            updateBorderPath()
+        }
     }
 
     /**
@@ -659,6 +692,20 @@ class SimpleSpeedView @JvmOverloads constructor(
      */
     fun setPointerOffset(offset: Float) {
         pointerOffset = offset
+        invalidate()
+    }
+
+    /**
+     * 设置指针图片
+     * @param resId 图片资源ID，传0则使用颜色绘制指针
+     */
+    fun setPointerDrawable(resId: Int) {
+        pointerDrawable = resId
+        if (resId != 0) {
+            loadPointerBitmap()
+        } else {
+            pointerBitmap = null
+        }
         invalidate()
     }
 
@@ -802,6 +849,47 @@ class SimpleSpeedView @JvmOverloads constructor(
     fun setScaleCount(count: Int) {
         scaleCount = count
         invalidate()
+    }
+
+    /**
+     * 带动画效果地设置速度（默认动画时长500ms）
+     * @param targetSpeed 目标速度值
+     */
+    fun animateToSpeed(targetSpeed: Float) {
+        animateToSpeed(targetSpeed, 500)
+    }
+
+    /**
+     * 带动画效果地设置速度
+     * @param targetSpeed 目标速度值
+     * @param duration 动画持续时间（毫秒）
+     */
+    fun animateToSpeed(targetSpeed: Float, duration: Long) {
+        // 取消之前的动画
+        speedAnimator?.cancel()
+        
+        // 限制目标速度在有效范围内
+        val target = targetSpeed.coerceIn(0f, maxSpeed)
+        
+        // 创建新的动画
+        speedAnimator = ValueAnimator.ofFloat(currentSpeed, target).apply {
+            this.duration = duration
+            
+            addUpdateListener { animation ->
+                val animatedValue = animation.animatedValue as Float
+                currentSpeed = animatedValue
+                invalidate() // 刷新视图
+            }
+            
+            start()
+        }
+    }
+
+    /**
+     * 取消当前的速度动画
+     */
+    fun cancelSpeedAnimation() {
+        speedAnimator?.cancel()
     }
 }
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:title="github"
+        android:id="@+id/github"
+        android:icon="@drawable/github_mark_white"
+        app:showAsAction="always"/>
+
+</menu>
