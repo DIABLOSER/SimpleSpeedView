@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomSpeedView">
+        <!-- 圆环起始角度（度数） -->
+        <attr name="startAngle" format="float" />
+        <!-- 圆环扫过的角度（度数） -->
+        <attr name="sweepAngle" format="float" />
+        <!-- 圆环背景颜色 -->
+        <attr name="arcBackgroundColor" format="color" />
+        <!-- 圆环进度颜色 -->
+        <attr name="arcProgressColor" format="color" />
+        <!-- 圆环宽度 -->
+        <attr name="arcWidth" format="dimension" />
+        <!-- 圆环边框颜色 -->
+        <attr name="arcBorderColor" format="color" />
+        <!-- 圆环边框宽度 -->
+        <attr name="arcBorderWidth" format="dimension" />
+        <!-- 指针颜色 -->
+        <attr name="pointerColor" format="color" />
+        <!-- 指针图片 -->
+        <attr name="pointerDrawable" format="reference" />
+        <!-- 指针长度 -->
+        <attr name="pointerLength" format="dimension" />
+        <!-- 指针宽度 -->
+        <attr name="pointerWidth" format="dimension" />
+        <!-- 指针偏移量（正数远离圆心，负数经过圆心） -->
+        <attr name="pointerOffset" format="dimension" />
+        <!-- 当前速度值 -->
+        <attr name="currentSpeed" format="float" />
+        <!-- 最大速度值 -->
+        <attr name="maxSpeed" format="float" />
+        <!-- 是否显示速度文本 -->
+        <attr name="showSpeedText" format="boolean" />
+        <!-- 速度数值颜色 -->
+        <attr name="speedTextColor" format="color" />
+        <!-- 速度数值大小 -->
+        <attr name="speedTextSize" format="dimension" />
+        <!-- 速度单位文本 -->
+        <attr name="speedUnit" format="string" />
+        <!-- 速度单位颜色 -->
+        <attr name="speedUnitColor" format="color" />
+        <!-- 速度单位大小 -->
+        <attr name="speedUnitSize" format="dimension" />
+        <!-- 速度文本背景图片 -->
+        <attr name="speedTextBackground" format="reference" />
+        <!-- 速度文本背景内边距 -->
+        <attr name="speedTextBackgroundPadding" format="dimension" />
+        <!-- 速度文本垂直偏移量（正数向下，负数向上） -->
+        <attr name="speedTextOffsetY" format="dimension" />
+        <!-- 是否显示刻度值 -->
+        <attr name="showScaleText" format="boolean" />
+        <!-- 刻度值显示在外侧（true）或内侧（false） -->
+        <attr name="scaleTextOutside" format="boolean" />
+        <!-- 刻度值颜色 -->
+        <attr name="scaleTextColor" format="color" />
+        <!-- 刻度值大小 -->
+        <attr name="scaleTextSize" format="dimension" />
+        <!-- 刻度值样式 -->
+        <attr name="scaleTextStyle" format="enum">
+            <enum name="normal" value="0" />
+            <enum name="bold" value="1" />
+            <enum name="italic" value="2" />
+            <enum name="bold_italic" value="3" />
+        </attr>
+        <!-- 刻度数量 -->
+        <attr name="scaleCount" format="integer" />
+    </declare-styleable>
+</resources>
+
