@@ -23,6 +23,11 @@ class SimpleSpeedView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    companion object {
+        const val POINTER_ROTATION_CLOCKWISE = 0
+        const val POINTER_ROTATION_COUNTERCLOCKWISE = 1
+    }
+
     // 圆环属性
     private var startAngle: Float = 135f // 起始角度（默认-45度，即135度）
     private var sweepAngle: Float = 270f // 扫过的角度（默认270度）
@@ -38,6 +43,7 @@ class SimpleSpeedView @JvmOverloads constructor(
     private var pointerLength: Float = 150f // 指针长度
     private var pointerWidth: Float = 8f // 指针宽度
     private var pointerOffset: Float = 0f // 指针偏移量（正数远离圆心，负数经过圆心）
+    private var pointerRotationDirection: Int = POINTER_ROTATION_CLOCKWISE // 指针旋转方向
 
     // 速度属性
     private var currentSpeed: Float = 0f // 当前速度
@@ -115,6 +121,10 @@ class SimpleSpeedView @JvmOverloads constructor(
             pointerLength = typedArray.getDimension(R.styleable.CustomSpeedView_pointerLength, 150f)
             pointerWidth = typedArray.getDimension(R.styleable.CustomSpeedView_pointerWidth, 8f)
             pointerOffset = typedArray.getDimension(R.styleable.CustomSpeedView_pointerOffset, 0f)
+            pointerRotationDirection = typedArray.getInt(
+                R.styleable.CustomSpeedView_pointerRotationDirection,
+                POINTER_ROTATION_CLOCKWISE
+            )
             
             currentSpeed = typedArray.getFloat(R.styleable.CustomSpeedView_currentSpeed, 0f)
             maxSpeed = typedArray.getFloat(R.styleable.CustomSpeedView_maxSpeed, 200f)
@@ -392,7 +402,12 @@ class SimpleSpeedView @JvmOverloads constructor(
 
         // 计算指针角度（根据进度）
         // 指针默认向上（-90度），所以需要加90度来校正
-        val pointerAngle = startAngle + sweepAngle * progress + 90f
+        val effectiveSweep = if (pointerRotationDirection == POINTER_ROTATION_CLOCKWISE) {
+            sweepAngle
+        } else {
+            -sweepAngle
+        }
+        val pointerAngle = startAngle + effectiveSweep * progress + 90f
 
         canvas.save()
         canvas.rotate(pointerAngle, centerX, centerY)
@@ -694,6 +709,21 @@ class SimpleSpeedView @JvmOverloads constructor(
         pointerOffset = offset
         invalidate()
     }
+
+    /**
+     * 设置指针旋转方向
+     * @param direction [POINTER_ROTATION_CLOCKWISE] 顺时针，[POINTER_ROTATION_COUNTERCLOCKWISE] 逆时针
+     */
+    fun setPointerRotationDirection(direction: Int) {
+        pointerRotationDirection = direction
+        invalidate()
+    }
+
+    /**
+     * 获取指针旋转方向
+     * @return [POINTER_ROTATION_CLOCKWISE] 或 [POINTER_ROTATION_COUNTERCLOCKWISE]
+     */
+    fun getPointerRotationDirection(): Int = pointerRotationDirection
 
     /**
      * 设置指针图片

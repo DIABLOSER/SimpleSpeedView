@@ -25,6 +25,11 @@
         <attr name="pointerWidth" format="dimension" />
         <!-- 指针偏移量（正数远离圆心，负数经过圆心） -->
         <attr name="pointerOffset" format="dimension" />
+        <!-- 指针旋转方向 -->
+        <attr name="pointerRotationDirection" format="enum">
+            <enum name="clockwise" value="0" />
+            <enum name="counterclockwise" value="1" />
+        </attr>
         <!-- 当前速度值 -->
         <attr name="currentSpeed" format="float" />
         <!-- 最大速度值 -->
