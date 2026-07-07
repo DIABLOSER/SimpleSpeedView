@@ -33,6 +33,8 @@ class SimpleSpeedView @JvmOverloads constructor(
     private var sweepAngle: Float = 270f // 扫过的角度（默认270度）
     private var arcBackgroundColor: Int = Color.LTGRAY // 圆环背景色
     private var arcProgressColor: Int = Color.parseColor("#00BCD4") // 圆环进度色
+    private var arcProgressStartColor: Int = Color.parseColor("#00BCD4") // 圆环进度渐变起始色
+    private var arcProgressEndColor: Int = Color.parseColor("#00BCD4") // 圆环进度渐变结束色
     private var arcWidth: Float = 30f // 圆环宽度
     private var arcBorderColor: Int = Color.TRANSPARENT // 圆环边框颜色
     private var arcBorderWidth: Float = 0f // 圆环边框宽度
@@ -109,6 +111,14 @@ class SimpleSpeedView @JvmOverloads constructor(
                 R.styleable.CustomSpeedView_arcProgressColor,
                 Color.parseColor("#00BCD4")
             )
+            arcProgressStartColor = typedArray.getColor(
+                R.styleable.CustomSpeedView_arcProgressStartColor,
+                arcProgressColor
+            )
+            arcProgressEndColor = typedArray.getColor(
+                R.styleable.CustomSpeedView_arcProgressEndColor,
+                arcProgressColor
+            )
             arcWidth = typedArray.getDimension(R.styleable.CustomSpeedView_arcWidth, 30f)
             arcBorderColor = typedArray.getColor(
                 R.styleable.CustomSpeedView_arcBorderColor,
@@ -174,11 +184,11 @@ class SimpleSpeedView @JvmOverloads constructor(
 
         // 圆环进度画笔
         arcProgressPaint.apply {
-            color = arcProgressColor
             style = Paint.Style.STROKE
             strokeWidth = arcWidth
             strokeCap = Paint.Cap.ROUND
         }
+        updateArcProgressShader()
 
         // 圆环边框画笔
         arcBorderPaint.apply {
@@ -305,6 +315,33 @@ class SimpleSpeedView @JvmOverloads constructor(
             // 构建完整的边框路径（封闭路径）
             updateBorderPath()
         }
+
+        updateArcProgressShader()
+    }
+
+    private fun updateArcProgressShader() {
+        if (width == 0 || height == 0) {
+            arcProgressPaint.shader = null
+            arcProgressPaint.color = arcProgressStartColor
+            return
+        }
+
+        if (arcProgressStartColor == arcProgressEndColor) {
+            arcProgressPaint.shader = null
+            arcProgressPaint.color = arcProgressStartColor
+            return
+        }
+
+        val centerX = width / 2f
+        val centerY = height / 2f
+        val sweepFraction = (sweepAngle / 360f).coerceIn(0f, 1f)
+        val colors = intArrayOf(arcProgressStartColor, arcProgressEndColor, arcProgressEndColor)
+        val positions = floatArrayOf(0f, sweepFraction, 1f)
+        val gradient = SweepGradient(centerX, centerY, colors, positions)
+        val matrix = Matrix()
+        matrix.postRotate(startAngle, centerX, centerY)
+        gradient.setLocalMatrix(matrix)
+        arcProgressPaint.shader = gradient
     }
     
     private fun updateBorderPath() {
@@ -592,7 +629,27 @@ class SimpleSpeedView @JvmOverloads constructor(
      */
     fun setArcProgressColor(color: Int) {
         arcProgressColor = color
-        arcProgressPaint.color = color
+        arcProgressStartColor = color
+        arcProgressEndColor = color
+        updateArcProgressShader()
+        invalidate()
+    }
+
+    /**
+     * 设置圆环进度渐变起始颜色
+     */
+    fun setArcProgressStartColor(color: Int) {
+        arcProgressStartColor = color
+        updateArcProgressShader()
+        invalidate()
+    }
+
+    /**
+     * 设置圆环进度渐变结束颜色
+     */
+    fun setArcProgressEndColor(color: Int) {
+        arcProgressEndColor = color
+        updateArcProgressShader()
         invalidate()
     }
 
@@ -687,6 +744,7 @@ class SimpleSpeedView @JvmOverloads constructor(
         if (arcBorderWidth > 0) {
             updateBorderPath()
         }
+        updateArcProgressShader()
         invalidate()
     }
 
@@ -698,6 +756,7 @@ class SimpleSpeedView @JvmOverloads constructor(
         if (arcBorderWidth > 0) {
             updateBorderPath()
         }
+        updateArcProgressShader()
         invalidate()
     }
 

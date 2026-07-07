@@ -9,6 +9,10 @@
         <attr name="arcBackgroundColor" format="color" />
         <!-- 圆环进度颜色 -->
         <attr name="arcProgressColor" format="color" />
+        <!-- 圆环进度渐变起始颜色 -->
+        <attr name="arcProgressStartColor" format="color" />
+        <!-- 圆环进度渐变结束颜色 -->
+        <attr name="arcProgressEndColor" format="color" />
         <!-- 圆环宽度 -->
         <attr name="arcWidth" format="dimension" />
         <!-- 圆环边框颜色 -->
