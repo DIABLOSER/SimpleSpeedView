@@ -335,8 +335,29 @@ class SimpleSpeedView @JvmOverloads constructor(
         val centerX = width / 2f
         val centerY = height / 2f
         val sweepFraction = (sweepAngle / 360f).coerceIn(0f, 1f)
-        val colors = intArrayOf(arcProgressStartColor, arcProgressEndColor, arcProgressEndColor)
-        val positions = floatArrayOf(0f, sweepFraction, 1f)
+
+        // SweepGradient 是闭合的（0°=360°），ROUND 端帽还会向弧线外侧延伸，
+        // 起始处会采样到 360° 附近的颜色，因此需要在首尾各加一段缓冲色标。
+        val arcRadius = arcRectF.width() / 2f
+        val capFix = if (arcRadius > 0f) {
+            ((arcWidth / 2f) / arcRadius * sweepFraction).coerceIn(0.002f, sweepFraction / 4f)
+        } else {
+            0.005f
+        }
+        val colors = intArrayOf(
+            arcProgressStartColor,
+            arcProgressStartColor,
+            arcProgressEndColor,
+            arcProgressEndColor,
+            arcProgressStartColor
+        )
+        val positions = floatArrayOf(
+            0f,
+            capFix,
+            sweepFraction - capFix,
+            sweepFraction,
+            1f
+        )
         val gradient = SweepGradient(centerX, centerY, colors, positions)
         val matrix = Matrix()
         matrix.postRotate(startAngle, centerX, centerY)
@@ -699,6 +720,7 @@ class SimpleSpeedView @JvmOverloads constructor(
             // 更新边框路径
             updateBorderPath()
         }
+        updateArcProgressShader()
     }
 
     /**

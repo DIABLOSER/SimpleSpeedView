@@ -44,7 +44,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 }
 group = "com.github.DIABLOSER"
-version = "1.0.4"
+version = "1.0.5"
 
 afterEvaluate {
     publishing {
@@ -53,7 +53,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "io.github.diabloser"
                 artifactId = "SimpleSpeedView"
-                version = "1.0.4"
+                version = "1.0.5"
             }
         }
     }

@@ -14,6 +14,7 @@
 ## ✨ 功能特性
 
 - 🎨 **高度可定制**：支持自定义圆环颜色、宽度、起始角度、扫过角度等
+- 🌈 **进度渐变**：支持圆环进度条起止渐变色，沿弧线平滑过渡
 - 🎯 **灵活的指针样式**：支持颜色指针和图片指针，可调节长度、宽度和偏移量
 - 📊 **刻度显示**：支持显示刻度值，可选内侧或外侧显示
 - 🔢 **速度文本显示**：可自定义速度数值、单位的颜色、大小和位置
@@ -87,6 +88,8 @@ dependencies {
     app:arcWidth="30dp"
     app:arcBackgroundColor="#CCCCCC"
     app:arcProgressColor="#00BCD4"
+    app:arcProgressStartColor="#00BCD4"
+    app:arcProgressEndColor="#FF5722"
     app:pointerColor="#FF0000"
     app:pointerLength="150dp"
     app:pointerWidth="8dp"
@@ -116,6 +119,8 @@ speedView.setMaxSpeed(200f)
 
 // 自定义颜色
 speedView.setArcProgressColor(Color.parseColor("#00BCD4"))
+speedView.setArcProgressStartColor(Color.parseColor("#00BCD4"))
+speedView.setArcProgressEndColor(Color.parseColor("#FF5722"))
 speedView.setPointerColor(Color.RED)
 
 // 设置指针样式
@@ -135,10 +140,14 @@ val currentSpeed = speedView.getSpeed()
 | `startAngle` | float | 135 | 圆环起始角度（度数） |
 | `sweepAngle` | float | 270 | 圆环扫过的角度（度数） |
 | `arcBackgroundColor` | color | #CCCCCC | 圆环背景颜色 |
-| `arcProgressColor` | color | #00BCD4 | 圆环进度颜色 |
+| `arcProgressColor` | color | #00BCD4 | 圆环进度颜色（未设置渐变起止色时作为默认值） |
+| `arcProgressStartColor` | color | 同 `arcProgressColor` | 圆环进度渐变起始颜色（弧线起点） |
+| `arcProgressEndColor` | color | 同 `arcProgressColor` | 圆环进度渐变结束颜色（弧线终点） |
 | `arcWidth` | dimension | 30dp | 圆环宽度 |
 | `arcBorderColor` | color | transparent | 圆环边框颜色 |
 | `arcBorderWidth` | dimension | 0dp | 圆环边框宽度 |
+
+> **进度渐变说明**：`arcProgressStartColor` 与 `arcProgressEndColor` 相同时显示纯色；设置不同颜色时，进度条沿弧线从起始色渐变到结束色。若未单独设置起止色，将使用 `arcProgressColor` 作为默认值。
 
 ### 指针属性
 
@@ -212,6 +221,8 @@ fun setMaxSpeed(max: Float)
 // 圆环设置
 fun setArcBackgroundColor(color: Int)
 fun setArcProgressColor(color: Int)
+fun setArcProgressStartColor(color: Int)
+fun setArcProgressEndColor(color: Int)
 fun setArcWidth(width: Float)
 fun setArcBorderColor(color: Int)
 fun setArcBorderWidth(width: Float)
@@ -258,7 +269,8 @@ speedView.animateToSpeed(60f) // 设置速度为 60
 
 ```kotlin
 speedView.apply {
-    setArcProgressColor(Color.parseColor("#FF5722"))
+    setArcProgressStartColor(Color.parseColor("#00BCD4"))
+    setArcProgressEndColor(Color.parseColor("#FF5722"))
     setPointerColor(Color.parseColor("#FF5722"))
     setArcWidth(40f)
     setPointerLength(180f)
@@ -304,7 +316,8 @@ speedView.setSpeedTextBackgroundPadding(16f)
     app:sweepAngle="180"
     app:arcWidth="40dp"
     app:arcBackgroundColor="#E0E0E0"
-    app:arcProgressColor="#FF5722"
+    app:arcProgressStartColor="#00BCD4"
+    app:arcProgressEndColor="#FF5722"
     app:arcBorderColor="#333333"
     app:arcBorderWidth="3dp"
     app:pointerDrawable="@drawable/custom_pointer"
